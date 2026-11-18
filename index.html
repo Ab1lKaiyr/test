@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IT-бағыттарға бейімділік тесті · 7-сынып</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#ffffff; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+    --accent:#4f46e5; --accent-soft:#eef2ff; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Roboto,"Noto Sans",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;font-size:16px}
+  .wrap{max-width:820px;margin:0 auto;padding:24px 16px 56px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+  .card + .card{margin-top:16px}
+  h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+  h2{font-size:21px;margin:0 0 12px}
+  h3{font-size:16px;margin:22px 0 8px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+  .sub{color:var(--muted);margin:0 0 20px}
+  .hidden{display:none !important}
+
+  /* Бастапқы бет */
+  .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+  .fact{background:var(--accent-soft);border-radius:12px;padding:14px 10px;text-align:center;font-size:14px;color:#3730a3}
+  .fact b{display:block;font-size:24px;color:var(--accent)}
+  .parts{margin:0 0 20px;padding-left:20px}
+  .parts li{margin-bottom:6px}
+  label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+  label span{font-weight:400;color:var(--muted)}
+  input[type=text]{width:100%;padding:12px 14px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px;font-family:inherit}
+  input[type=text]:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .err{color:#dc2626;font-size:14px;margin-top:8px;min-height:20px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:10px;border:1px solid transparent;font-size:16px;font-weight:600;font-family:inherit;cursor:pointer;background:var(--accent);color:#fff}
+  .btn:hover{filter:brightness(1.07)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn.ghost{background:#fff;color:var(--ink);border-color:#cbd5e1}
+  .btn.danger{background:#fff;color:#b91c1c;border-color:#fca5a5}
+  .linkbtn{background:none;border:none;color:var(--accent);font:inherit;font-size:14px;cursor:pointer;padding:0;text-decoration:underline}
+  details{margin-top:22px;border-top:1px solid var(--line);padding-top:16px;font-size:14px}
+  summary{cursor:pointer;font-weight:600;color:#374151}
+  details ol{padding-left:20px;margin:10px 0 0}
+  details li{margin-bottom:6px}
+
+  /* Сұрақтар */
+  .qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;font-size:14px}
+  .chip{background:var(--accent-soft);color:#3730a3;border-radius:999px;padding:4px 12px;font-weight:600}
+  .counter{color:var(--muted)}
+  .progress{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:24px}
+  .progress div{height:100%;background:var(--accent);transition:width .25s}
+  .qhint{color:var(--muted);font-size:15px;margin-bottom:4px}
+  .qtext{font-size:19px;font-weight:600;margin-bottom:16px}
+  .qtext.big{font-size:22px}
+  .figure{display:flex;justify-content:center;margin:4px 0 18px}
+  .figure svg{max-width:100%;height:auto}
+  pre.code{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:14px 16px;font-size:15px;overflow:auto;margin:0 0 18px;font-family:Consolas,"Courier New",monospace}
+  .opts{display:grid;gap:10px}
+  .opt{display:flex;align-items:center;gap:12px;text-align:left;width:100%;padding:13px 16px;border:2px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:16px;color:var(--ink);cursor:pointer}
+  .opt:hover{border-color:#a5b4fc;background:#fafaff}
+  .opt .let{flex:0 0 30px;height:30px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:700;color:#475569}
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .opt.sel .let{background:var(--accent);color:#fff}
+  .opt.dk{color:var(--muted);border-style:dashed}
+  .likert{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .lk{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;border:2px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;text-align:center}
+  .lk:hover{border-color:#a5b4fc}
+  .lk .lkn{width:34px;height:34px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px}
+  .lk.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .lk.sel .lkn{background:var(--accent);color:#fff}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+
+  /* Нәтиже */
+  .hero{border-left:6px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:18px 20px;margin:8px 0 18px}
+  .hero .lbl{font-size:14px;color:#3730a3;font-weight:600}
+  .hero .big{font-size:26px;font-weight:700;line-height:1.25;margin:4px 0}
+  .hero .lvl{font-size:15px}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+  .badge{background:#f1f5f9;border-radius:999px;padding:6px 12px;font-size:14px}
+  .badge.star{background:#fef3c7;color:#92400e;font-weight:600}
+  .drow{display:grid;grid-template-columns:240px 1fr 52px;align-items:center;gap:4px 12px;padding:8px 0;border-bottom:1px solid #f1f5f9}
+  .dname{font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px}
+  .dot{width:12px;height:12px;border-radius:50%;flex:0 0 12px}
+  .track{height:14px;background:#eef0f4;border-radius:99px;overflow:hidden}
+  .fill{height:100%;border-radius:99px}
+  .pct{font-weight:700;text-align:right}
+  .dsub{grid-column:2 / 4;font-size:13px;color:var(--muted);margin-top:-2px}
+  .insights{margin:10px 0 0;padding-left:20px}
+  .insights li{margin-bottom:6px}
+  .dircard{border:1px solid var(--line);border-top:5px solid var(--accent);border-radius:12px;padding:18px 20px;margin-top:16px}
+  .dircard h2{margin-bottom:4px}
+  .dircard .tag{font-size:13px;font-weight:600;color:var(--muted)}
+  .dircard ul{margin:6px 0 0;padding-left:20px}
+  .dircard li{margin-bottom:6px}
+  .note{background:#fff7ed;border-radius:10px;padding:10px 14px;font-size:14px;margin-top:12px}
+  .path{background:#f0fdf4;border-radius:12px;padding:16px 20px;margin-top:16px}
+  .path h3{margin-top:0;color:#166534}
+  .small{font-size:13px;color:var(--muted)}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+
+  /* Мұғалім панелі */
+  .tablewrap{overflow:auto;margin-top:14px;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+  th{background:#f8fafc;font-weight:600}
+  td.num{text-align:right}
+
+  @media (max-width:640px){
+    .card{padding:20px}
+    h1{font-size:23px}
+    .facts{grid-template-columns:1fr 1fr 1fr;gap:8px}
+    .row2{grid-template-columns:1fr}
+    .likert{grid-template-columns:1fr}
+    .lk{flex-direction:row;justify-content:flex-start;padding:10px 14px;font-size:15px}
+    .drow{grid-template-columns:1fr 46px}
+    .drow .track{grid-column:1 / 3;grid-row:2}
+    .dsub{grid-column:1 / 3}
+  }
+  @media print{
+    body{background:#fff}
+    .no-print{display:none !important}
+    .card{border:none;box-shadow:none;padding:0}
+    .wrap{padding:0}
+    .dircard,.drow{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 1. Бастапқы бет -->
+  <section id="start" class="card">
+    <h1>IT-бағыттарға бейімділік тесті</h1>
+    <p class="sub">7-сынып оқушыларына арналған</p>
+    <div class="facts">
+      <div class="fact"><b>34</b>сұрақ</div>
+      <div class="fact"><b>≈35</b>минут</div>
+      <div class="fact"><b>6</b>IT-бағыт</div>
+    </div>
+    <p>Бұл тест сенің қай IT-бағытқа бейім екеніңді анықтауға көмектеседі. Тест екі бөлімнен тұрады:</p>
+    <ol class="parts">
+      <li><b>1-бөлім — 22 есеп</b> (логика, математика, техника). Әр есептің бір ғана дұрыс жауабы бар. Жауабын білмесең, «Білмеймін» деп белгіле — бұл кездейсоқ таңдағаннан дұрысырақ.</li>
+      <li><b>2-бөлім — 12 сұрақ</b> сенің қызығушылықтарың туралы. Мұнда дұрыс не бұрыс жауап жоқ, шыныңды айт.</li>
+    </ol>
+    <p class="small">Қағаз бен қаламды қолдануға болады. Калькулятор мен телефонды қолданба.</p>
+
+    <label for="fName">Аты-жөнің</label>
+    <input id="fName" type="text" autocomplete="off" placeholder="Мысалы: Әлібек Серікұлы">
+    <div class="row2">
+      <div>
+        <label for="fClass">Сыныбың</label>
+        <input id="fClass" type="text" autocomplete="off" placeholder="Мысалы: 7 «Ә»">
+      </div>
+      <div>
+        <label for="fSchool">Мектебің <span>(міндетті емес)</span></label>
+        <input id="fSchool" type="text" autocomplete="off" placeholder="Мысалы: №12 мектеп">
+      </div>
+    </div>
+    <div class="err" id="startErr"></div>
+    <button class="btn" id="startBtn" type="button">Тестті бастау</button>
+
+    <details>
+      <summary>Мұғалімге: тестті қалай өткізу керек</summary>
+      <ol>
+        <li>Әр оқушыға жеке компьютер немесе планшет беріңіз. Интернет қажет емес — файлды браузерде ашсаңыз жеткілікті.</li>
+        <li>Тестке 40 минут бөліңіз. Қағаз бен қалам беріңіз, калькулятор мен телефонға рұқсат етпеңіз, көмектеспеңіз.</li>
+        <li>Тест алдында түсіндіріңіз: «Білмесең — "Білмеймін" деп белгіле, кездейсоқ таңдама». Бұл нәтижені дәлірек етеді.</li>
+        <li>Әр нәтиже осы компьютерде сақталады. Сабақтан кейін «Мұғалім панелін» ашып, CSV файлын жүктеп алыңыз (Excel-де ашылады). Әр компьютерден жеке жүктеңіз.</li>
+        <li>Тест — бағдар ғана. Соңғы шешімді сынақ сабақтағы бақылаумен бірге қабылдаңыз. Қабілеті жоғары, бірақ қызығушылығы төмен оқушыларды сынақ сабаққа шақырыңыз.</li>
+      </ol>
+      <p style="margin-top:12px"><button class="linkbtn" type="button" id="openTeacher1">Мұғалім панелін ашу →</button></p>
+    </details>
+  </section>
+
+  <!-- 2. Сұрақтар -->
+  <section id="quiz" class="card hidden">
+    <div class="qhead">
+      <span class="chip" id="partChip"></span>
+      <span class="counter" id="counter"></span>
+    </div>
+    <div class="progress"><div id="bar"></div></div>
+    <div id="qbox"></div>
+    <div class="nav">
+      <button class="btn ghost" id="prevBtn" type="button">← Артқа</button>
+      <button class="btn" id="nextBtn" type="button">Келесі →</button>
+    </div>
+  </section>
+
+  <!-- 3. Нәтиже -->
+  <section id="result" class="hidden"></section>
+
+  <!-- 4. Мұғалім панелі -->
+  <section id="teacher" class="card hidden">
+    <h2>Мұғалім панелі</h2>
+    <p class="sub" style="margin-bottom:8px">Осы компьютерде тапсырылған тест нәтижелері. Пайыздар — әр бағыт бойынша жалпы бейімділік (есептер 60% + қызығушылық 40%).</p>
+    <div id="teacherBody"></div>
+    <div class="actions no-print">
+      <button class="btn" id="csvBtn" type="button">CSV жүктеп алу</button>
+      <button class="btn danger" id="clearBtn" type="button">Барлығын өшіру</button>
+      <button class="btn ghost" id="backFromTeacher" type="button">← Артқа</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ---------- Бағыттар ---------- */
+const ORDER = ['ALG','AI','ROB','DRN','SEC','DEV'];
+const DIRS = {
+  ALG:{
+    name:'Олимпиадалық бағдарламалау', color:'#4f46e5',
+    why:'Сен логикалық есептерді жақсы шешесің, заңдылықты байқайсың және әрекеттер тізбегін ойша орындай аласың. Бұл — алгоритмдік ойлаудың белгісі.',
+    learn:['Python тілінің негіздері, кейін C++','Алгоритмдер мен деректер құрылымдары: сұрыптау, іздеу, графтар','Codeforces және AtCoder сайттарында тұрақты есеп шығару','Математика: комбинаторика, сандар теориясы, логика'],
+    where:['Жалпы білім беретін пәндер бойынша республикалық олимпиада, «Информатика» пәні (7–8-сыныптар): мектептік, аудандық, облыстық және қорытынды кезеңдер. Ұйымдастырушы — «Дарын» орталығы','Ауыл мектептерінің оқушыларына — smart.daryn.kz платформасындағы жеке олимпиада','Кейін: EJOI (Еуропалық жасөспірімдер информатика олимпиадасы) және IOI (Халықаралық информатика олимпиадасы) — құрама республикалық олимпиада жеңімпаздарынан жасақталады','Қыздарға: CodeGirls олимпиадасы (CPFED, тегін) → EGOI','Жыл бойы: Codeforces, AtCoder онлайн-жарыстары'],
+    gain:'Ұлттық құрамаға жол және халықаралық олимпиадалар; мықты мектептер мен университеттерге түсу үшін күшті портфолио; кез келген IT-бағытқа берік негіз.'
+  },
+  AI:{
+    name:'Жасанды интеллект және деректер', color:'#0284c7',
+    why:'Сен деректерден қорытынды шығара аласың, ықтималдық пен статистиканы түсінесің және «неге олай болды?» деп сұрақ қоюды ұнатасың.',
+    learn:['Python және деректермен жұмыс: кестелер, графиктер','Математика: статистика, ықтималдық, кейін сызықтық алгебра','Машиналық оқытудың негіздері: модель деректерден қалай үйренеді','Kaggle сайтындағы оқу жарыстары'],
+    where:['Мектеп оқушыларына арналған AI-хакатондар (мысалы, Astana Hub ұйымдастыратын Skillset AI Hackathon — 12–18 жас)','Infomatrix Asia — AI Programming және AI Hackathon санаттары (жоба ағылшын тілінде қорғалады)','9-сыныптан бастап: AI Olymp республикалық олимпиадасы (CPFED, тегін) → IOAI халықаралық олимпиадасы','FAIO — жасанды интеллект бойынша халықаралық командалық олимпиада','TUMO Astana — 12–18 жастағыларға тегін оқу, оның ішінде генеративті ЖИ'],
+    gain:'Ең жылдам дамып жатқан саладағы дағдылар. 2026 жылы Халықаралық жасанды интеллект олимпиадасы (IOAI) Астанада өтті — бұл бағытта Қазақстанның құрамасы белсенді жасақталады.'
+  },
+  ROB:{
+    name:'Робототехника', color:'#d97706',
+    why:'Сен механизмдердің қалай жұмыс істейтінін жақсы түсінесің, кеңістікте ойлай аласың және бірдеңені өз қолыңмен құрастыруды ұнатасың.',
+    learn:['LEGO Spike немесе ұқсас конструкторлар, кейін Arduino','Датчиктер мен моторлар, роботты бағдарламалау (Python, C++)','3D-модельдеу және инженерлік сызу','Физика: күш, жылдамдық, беріліс қатынасы'],
+    where:['WRO — Дүниежүзілік робототехника олимпиадасы. Қазақстанда Назарбаев Зияткерлік мектептері өткізеді: өңірлік кезең → ұлттық кезең → әлемдік финал','FIRST LEGO League Challenge (10–16 жас), кейін FIRST Tech Challenge — ұлттық кезеңі Alem Tech Fest фестивалінде өтеді','Infomatrix Asia — Hardware Control, Arduino Hackathon, робофутбол санаттары'],
+    gain:'Халықаралық финалдарға жол (мысалы, FIRST Championship — Хьюстон, АҚШ; WRO әлемдік финалы), инженерлік портфолио және командада жұмыс тәжірибесі.'
+  },
+  DRN:{
+    name:'Дрондар және Physical AI', color:'#059669',
+    why:'Сен қозғалысты, бағыт пен жылдамдықты жақсы елестетесің және ұшатын техниканы басқарғың келеді.',
+    learn:['FPV-симуляторда дронды басқару','Дронның ұшуын бағдарламалау (Python)','Компьютерлік көру негіздері: камера арқылы нысанды тану','Физика мен геометрия: жылдамдық, бағыт, координаттар'],
+    where:['Alem Tech Fest аясындағы жарыстар: Alem Drone League, AI Drone Challenge, Physical AI Championship','Робототехника жарыстары (WRO, FIRST) — инженерлік негізді нығайту үшін'],
+    gain:'Жаңа әрі тез дамып жатқан бағыт: мұнда бәсеке әзірге төмен, сондықтан ерте бастағандар тез алға шығады.'
+  },
+  SEC:{
+    name:'Киберқауіпсіздік', color:'#dc2626',
+    why:'Сен ұсақ бөлшектерге мән бересің, күдікті нәрсені тез байқайсың және шифрлар мен жұмбақтарды шешкенді ұнатасың.',
+    learn:['Компьютер желілері және интернет қалай жұмыс істейді','Linux операциялық жүйесі және командалық жол','Криптография негіздері: шифрлар қалай құрылады','CTF оқу тапсырмалары («туды тартып ал» форматы)'],
+    where:['IT-мектеп ішіндегі CTF жарыстары','Болашақта: AITU CTF сияқты турнирлер (оқушыларға қатысу шарттарын алдын ала нақтылау керек)','Халықаралық киберқауіпсіздік олимпиадасы (International Cybersecurity Olympiad) — жоғары сынып оқушыларына арналған'],
+    note:'Есте сақта: «бұзуды» тек рұқсат етілген оқу тапсырмаларында ғана үйренеміз.',
+    gain:'Ең тапшы IT-мамандықтардың бірі. Қауіпсіздік туралы ойлау кез келген бағдарламашыға керек.'
+  },
+  DEV:{
+    name:'Веб, қосымшалар және ойындар', color:'#9333ea',
+    why:'Сен қатені тез табасың, пайдаланушы туралы ойлайсың және өз идеяңды жұмыс істейтін өнімге айналдырғың келеді.',
+    learn:['HTML, CSS және JavaScript — алғашқы сайттар','Ойын жасау: Scratch-тан кейін Unity немесе Godot','Figma-да интерфейс жобалау','Жобаны таныстыру (питч) және командада жұмыс'],
+    where:['Мектеп оқушыларына арналған хакатондар (мысалы, Skillset AI Hackathon — 12–18 жас, командада 3 адамға дейін)','Infomatrix Asia — компьютерлік графика және стартап-жобалар санаттары','Ғылыми жобалардың республикалық конкурсы','TUMO Astana — 12–18 жастағыларға тегін: бағдарламалау, геймдев, веб-әзірлеу'],
+    gain:'Өзің жасаған өнімдері бар портфолио, командада жұмыс істеу және жобаны қорғау дағдысы. Бұл бағыт хакатондарда тез нәтиже береді.'
+  }
+};
+
+/* ---------- Суреттер ---------- */
+function gear(cx, cy, rot){
+  let teeth = '';
+  for (let k = 0; k < 8; k++) teeth += `<rect x="-6" y="-41" width="12" height="12" rx="2" transform="rotate(${k*45+rot})"/>`;
+  return `<g transform="translate(${cx} ${cy})" fill="#6366f1"><circle r="31" fill="#e0e7ff" stroke="#6366f1" stroke-width="3"/>${teeth}<circle r="6"/></g>`;
+}
+const GEARS_SVG = `<svg viewBox="0 0 280 145" width="300" role="img" aria-label="Бір қатарда ілініскен үш тісті доңғалақ">
+  <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker></defs>
+  ${gear(60,78,0)}${gear(140,78,22.5)}${gear(220,78,0)}
+  <path d="M30 34 Q60 8 90 34" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arr)"/>
+  <g font-size="16" font-weight="700" fill="#334155" text-anchor="middle"><text x="60" y="140">1</text><text x="140" y="140">2</text><text x="220" y="140">3</text></g>
+</svg>`;
+const GRAPH_SVG = `<svg viewBox="0 0 340 195" width="360" role="img" aria-label="Қалалар арасындағы жолдар">
+  <g stroke="#94a3b8" stroke-width="3">
+    <line x1="40" y1="95" x2="190" y2="30"/><line x1="40" y1="95" x2="150" y2="162"/>
+    <line x1="150" y1="162" x2="190" y2="30"/><line x1="190" y1="30" x2="300" y2="95"/>
+    <line x1="150" y1="162" x2="300" y2="95"/>
+  </g>
+  <g font-size="16" font-weight="700" fill="#b45309" text-anchor="middle">
+    <text x="104" y="52">4</text><text x="82" y="146">2</text><text x="184" y="104">1</text><text x="256" y="52">3</text><text x="238" y="148">6</text>
+  </g>
+  <g fill="#4f46e5"><circle cx="40" cy="95" r="17"/><circle cx="190" cy="30" r="17"/><circle cx="150" cy="162" r="17"/><circle cx="300" cy="95" r="17"/></g>
+  <g font-size="16" font-weight="700" fill="#fff" text-anchor="middle"><text x="40" y="101">A</text><text x="190" y="36">B</text><text x="150" y="168">C</text><text x="300" y="101">D</text></g>
+</svg>`;
+
+/* ---------- 1-бөлім: есептер (w — әр бағытқа салмағы) ---------- */
+const TASKS = [
+  {text:'Заңдылықты тап: 2, 6, 12, 20, 30, … Келесі сан қандай?', options:['40','42','44','36'], correct:1, w:{ALG:2, AI:1}},
+  {text:'Үш тісті доңғалақ бір қатарда бір-бірімен ілініскен. Сол жақтағы 1-доңғалақ сағат тілімен айналады. Оң жақтағы 3-доңғалақ қалай айналады?', svg:GEARS_SVG, options:['Сағат тілімен','Сағат тіліне қарсы','Айналмайды','Кезек-кезек екі жаққа'], correct:0, w:{ROB:2, DRN:1}},
+  {text:'5 оқушының бойы: 150, 152, 155, 158 және 185 см. Осы топтағы «әдеттегі» оқушының бойын қай көрсеткіш дұрысырақ сипаттайды?', options:['Орташа мән — 160 см','Медиана (ортадағы мән) — 155 см','Ең үлкен мән — 185 см','Ең кіші мән — 150 см'], correct:1, w:{AI:2}},
+  {text:'Шифрда әр латын әрпі алфавитте бір әріп алға жылжытылған: A→B, B→C, C→D және т.с.с. «IBDL» деген шифрланған сөздің бастапқы түрі қандай?', options:['HACK','JCEM','GAZK','HBDK'], correct:0, w:{SEC:2, ALG:1}},
+  {text:'Алгоритмді орында. Басында x = 3. Келесі әрекетті 4 рет қайтала: «x-ті 2-ге көбейтіп, 1-ді азайт». Соңында x неге тең?', options:['33','17','65','24'], correct:0, w:{ALG:2, DEV:1}},
+  {text:'Робот солтүстікке қарап тұр. Ол мына командаларды кезекпен орындайды: «оңға бұрыл», «оңға бұрыл», «солға бұрыл». Енді робот қай жаққа қарап тұр?', options:['Солтүстік','Шығыс','Оңтүстік','Батыс'], correct:1, w:{DRN:2, ROB:1, ALG:1}},
+  {text:'Ойында әр жеңістен кейін ұпай 10-ға өсуі керек, бірақ ол үнемі 0 болып қала береді. Бағдарлама былай жазылған. Қате неде?', code:'ұпай = 0\nжеңіс болса:\n    жаңа_ұпай = ұпай + 10\nэкранға шығар(ұпай)', options:['Есептелген нәтиже «ұпай» айнымалысына сақталмайды','10 саны тым кіші','Ұпай 0-ден басталмауы керек','Компьютер қосуды дұрыс орындамайды'], correct:0, w:{DEV:2, ALG:1}},
+  {text:'Бағдарлама мысық пен итті суреттен ажыратуды үйренді. Оған 1000 мысық суреті және тек 10 ит суреті көрсетілген. Енді ол иттерді жиі қате таниды. Неге?', options:['Ит суреттері тым аз — деректер теңгерімсіз','Иттер мысықтардан үлкен','Суреттер түсті болған','Бағдарлама 1000-нан көп санай алмайды'], correct:0, w:{AI:2}},
+  {text:'Кіші тісті доңғалақта 10 тіс бар, ол 30 тісі бар үлкен доңғалақты айналдырады. Кіші доңғалақ 3 айналым жасағанда, үлкен доңғалақ неше айналым жасайды?', options:['1','3','9','10'], correct:0, w:{ROB:2, DRN:1}},
+  {text:'Саған банк атынан SMS келді: «Картаңыз бұғатталды! Мына сілтемеге кіріп, карта деректерін енгізіңіз: bank-secure-24.xyz». Ең дұрыс әрекет қайсы?', options:['Сілтемені ашпай, банктің ресми қосымшасы немесе картадағы нөмір арқылы тексеру','Тез арада сілтемеге кіріп, деректерді енгізу','SMS-ке жауап жазып, не болғанын сұрау','Сілтемені досыма жіберіп, тексертіп көру'], correct:0, w:{SEC:2}},
+  {text:'Мен 1-ден 100-ге дейінгі бір санды ойладым. Сен сан айтасың, мен «көп», «аз» немесе «таптың» деп жауап беремін. Ең тиімді тәсілмен ойнасаң, ең нашар жағдайда санды табу үшін неше рет айту жеткілікті?', options:['7','10','50','100'], correct:0, w:{ALG:2, AI:1}},
+  {text:'Дрон 5 м/с жылдамдықпен ұшады. Ол 300 метрді неше секундта ұшып өтеді?', options:['60','1500','30','6'], correct:0, w:{DRN:2, ROB:1}},
+  {text:'Қапта 3 қызыл, 5 көк және 2 жасыл шар бар. Қарамай бір шар алынады. Оның көк болу ықтималдығы қандай?', options:['1/2','1/5','1/3','5/3'], correct:0, w:{AI:2, ALG:1}},
+  {text:'Қай құпиясөз ең сенімді?', options:['123456','Aigerim2013','qwerty12','Tau!Kitap7#Su'], correct:3, w:{SEC:2}},
+  {text:'Робот еденге салынған қара сызықтың бойымен жүруі керек. Оған қай датчик ең қажет?', options:['Түс (жарық) датчигі','Дыбыс датчигі','Температура датчигі','Ылғалдылық датчигі'], correct:0, w:{ROB:2}},
+  {text:'Сен мектепке арналған қосымша жасадың. Оқушылар «Жіберу» батырмасын таба алмай жүр. Ең жақсы шешім қайсы?', options:['Оқушылардың қосымшаны қалай қолданатынын бақылап, батырманы көрнекі жерге қойып, қайта тексеру','Ештеңе өзгертпеу — уақыт өте үйреніп алады','Ұзын нұсқаулық жазып, оны оқуды талап ету','Батырманы мүлдем алып тастау'], correct:0, w:{DEV:2}},
+  {text:'5 оқушы кездесіп, әрқайсысы қалғандарымен бір реттен қол алысты. Барлығы неше рет қол алысу болды?', options:['10','20','25','5'], correct:0, w:{ALG:2}},
+  {text:'Суретте қалалар арасындағы жолдар мен олардың ұзындығы (км) көрсетілген. A қаласынан D қаласына дейінгі ең қысқа жол неше километр?', svg:GRAPH_SVG, options:['6','7','8','9'], correct:0, w:{DRN:2, ALG:1, ROB:1}},
+  {text:'Балмұздақ көп сатылған күндері суға түсу кезіндегі жазатайым оқиғалар да көбейеді. Ең дұрыс түсіндірме қайсы?', options:['Екеуіне де ыстық ауа райы әсер етеді','Балмұздақ жүзуге кедергі келтіреді','Бұл кездейсоқтық, ешқандай байланыс жоқ','Суға түскендердің бәрі балмұздақ жейді'], correct:0, w:{AI:2, SEC:1}},
+  {text:'Мектеп сайтына кіру журналы берілген. Қай жазба ең күдікті?', code:'09:00 — Асқар, Орал\n09:05 — Дана, Орал\n03:12 — Асқар, Бразилия\n09:10 — Асқар, Орал', options:['03:12 — Асқар, Бразилия','09:00 — Асқар, Орал','09:05 — Дана, Орал','09:10 — Асқар, Орал'], correct:0, w:{SEC:2, AI:1}},
+  {text:'Бағдарламада i айнымалысы 1-ден 4-ке дейін өзгереді. Әр қадамда экранға i рет жұлдызша (*) шығарылады. Барлығы неше жұлдызша шығады?', code:'i = 1, 2, 3, 4 үшін қайтала:\n    экранға i рет «*» шығар', options:['10','4','8','16'], correct:0, w:{DEV:2, ALG:1}},
+  {text:'3×3×3 үлкен текше (куб) 27 кіші текшеден құралған. Үлкен текшенің сырты түгел боялды. Неше кіші текшенің дәл 2 жағы боялған?', options:['12','8','6','24'], correct:0, w:{ROB:2, ALG:1, DRN:1}}
+];
+
+/* ---------- 2-бөлім: қызығушылықтар ---------- */
+const INTERESTS = [
+  {dir:'ALG', text:'Қиын логикалық есепті шешу үшін ұзақ ойлану'},
+  {dir:'ROB', text:'Бірдеңені өз қолыммен құрастыру, бөлшектеу немесе жөндеу'},
+  {dir:'AI',  text:'Сандар мен кестелерден қызықты заңдылық іздеу'},
+  {dir:'DEV', text:'Өз ойынымды, сайтымды немесе қосымшамды жасау'},
+  {dir:'SEC', text:'Шифрлар мен жасырын жұмбақтарды шешу'},
+  {dir:'DRN', text:'Дронды немесе радиомен басқарылатын көлікті басқару'},
+  {dir:'ALG', text:'Ойында жеңудің ең тиімді стратегиясын немесе ең қысқа жолды табу'},
+  {dir:'ROB', text:'Роботқа кедергіні айналып өтуді үйрету'},
+  {dir:'AI',  text:'Компьютер қалай «үйренетінін» түсіну (мысалы, бет-әлпетті тану немесе чат-бот)'},
+  {dir:'DEV', text:'Адамдарға ыңғайлы әрі әдемі интерфейс ойлап табу'},
+  {dir:'SEC', text:'Алаяқтар мен хакерлердің қалай алдайтынын және одан қалай қорғануды білу'},
+  {dir:'DRN', text:'Ұшатын аппараттардың қалай жұмыс істейтінін зерттеу'}
+];
+const LIKERT = ['Мүлдем ұнамайды','Онша ұнамайды','Орташа','Ұнайды','Өте ұнайды'];
+const TOTAL = TASKS.length + INTERESTS.length;
+const STORE_KEY = 'itTest7Results';
+
+/* ---------- Күй ---------- */
+let state = null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function show(id){
+  ['start','quiz','result','teacher'].forEach(s => $('#'+s).classList.toggle('hidden', s !== id));
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Бастау ---------- */
+$('#startBtn').addEventListener('click', () => {
+  const name = $('#fName').value.trim();
+  const cls = $('#fClass').value.trim();
+  if (!name){ $('#startErr').textContent = 'Аты-жөніңді жаз.'; $('#fName').focus(); return; }
+  if (!cls){ $('#startErr').textContent = 'Сыныбыңды жаз.'; $('#fClass').focus(); return; }
+  $('#startErr').textContent = '';
+  state = {
+    name, cls, school: $('#fSchool').value.trim(),
+    idx: 0, answers: new Array(TOTAL).fill(null),
+    perm: TASKS.map(t => shuffle(t.options.map((_, k) => k))),
+    start: Date.now(), end: 0
+  };
+  show('quiz'); renderQ();
+});
+
+/* ---------- Сұрақты көрсету ---------- */
+function renderQ(){
+  const i = state.idx;
+  const isTask = i < TASKS.length;
+  $('#partChip').textContent = isTask ? '1-бөлім · Есептер' : '2-бөлім · Қызығушылықтар';
+  $('#counter').textContent = `Сұрақ ${i + 1} / ${TOTAL}`;
+  $('#bar').style.width = (i / TOTAL * 100) + '%';
+  let html = '';
+  if (isTask){
+    const t = TASKS[i];
+    html += `<div class="qtext">${esc(t.text)}</div>`;
+    if (t.svg) html += `<div class="figure">${t.svg}</div>`;
+    if (t.code) html += `<pre class="code">${esc(t.code)}</pre>`;
+    html += '<div class="opts" role="radiogroup">';
+    state.perm[i].forEach((k, n) => {
+      const sel = state.answers[i] === k;
+      html += `<button type="button" class="opt ${sel ? 'sel' : ''}" role="radio" aria-checked="${sel}" data-v="${k}"><span class="let">${'ABCD'[n]}</span><span>${esc(t.options[k])}</span></button>`;
+    });
+    const dk = state.answers[i] === -1;
+    html += `<button type="button" class="opt dk ${dk ? 'sel' : ''}" role="radio" aria-checked="${dk}" data-v="-1"><span class="let">?</span><span>Білмеймін</span></button></div>`;
+  } else {
+    const q = INTERESTS[i - TASKS.length];
+    html += `<div class="qhint">Мына іс саған қаншалықты ұнайды?</div><div class="qtext big">${esc(q.text)}</div><div class="likert" role="radiogroup">`;
+    LIKERT.forEach((l, n) => {
+      const v = n + 1, sel = state.answers[i] === v;
+      html += `<button type="button" class="lk ${sel ? 'sel' : ''}" role="radio" aria-checked="${sel}" data-v="${v}"><span class="lkn">${v}</span><span>${l}</span></button>`;
+    });
+    html += '</div>';
+  }
+  $('#qbox').innerHTML = html;
+  $('#qbox').querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => {
+    state.answers[i] = Number(b.dataset.v);
+    renderQ();
+    $('#nextBtn').focus();
+  }));
+  $('#prevBtn').disabled = i === 0;
+  $('#nextBtn').disabled = state.answers[i] === null;
+  $('#nextBtn').textContent = i === TOTAL - 1 ? 'Нәтижені көру' : 'Келесі →';
+}
+
+$('#prevBtn').addEventListener('click', () => { if (state.idx > 0){ state.idx--; renderQ(); } });
+$('#nextBtn').addEventListener('click', () => {
+  if (state.answers[state.idx] === null) return;
+  if (state.idx < TOTAL - 1){ state.idx++; renderQ(); window.scrollTo(0, 0); }
+  else finish();
+});
+document.addEventListener('keydown', e => {
+  if ($('#quiz').classList.contains('hidden') || !state) return;
+  const i = state.idx;
+  if (i >= TASKS.length && /^[1-5]$/.test(e.key)){ state.answers[i] = Number(e.key); renderQ(); }
+  if (e.key === 'Enter' && !$('#nextBtn').disabled){ e.preventDefault(); $('#nextBtn').click(); }
+});
+
+/* ---------- Есептеу ---------- */
+function compute(){
+  const ab = {}, abMax = {}, intr = {}, intrN = {};
+  ORDER.forEach(d => { ab[d] = 0; abMax[d] = 0; intr[d] = 0; intrN[d] = 0; });
+  let correct = 0;
+  TASKS.forEach((t, i) => {
+    const ok = state.answers[i] === t.correct;
+    if (ok) correct++;
+    for (const d in t.w){ abMax[d] += t.w[d]; if (ok) ab[d] += t.w[d]; }
+  });
+  INTERESTS.forEach((q, j) => { intr[q.dir] += (state.answers[TASKS.length + j] - 1) / 4; intrN[q.dir]++; });
+  const scores = ORDER.map(d => {
+    const ability = Math.round(100 * ab[d] / abMax[d]);
+    const interest = Math.round(100 * intr[d] / intrN[d]);
+    return {d, ability, interest, total: Math.round(0.6 * ability + 0.4 * interest)};
+  });
+  const ranked = [...scores].sort((a, b) => b.total - a.total || b.ability - a.ability);
+  return {scores, ranked, correct, minutes: Math.max(1, Math.round((state.end - state.start) / 60000))};
+}
+
+function levelText(p){
+  if (p >= 70) return 'жоғары';
+  if (p >= 50) return 'орташа';
+  return 'дамып келеді';
+}
+
+function insights(r){
+  const out = [];
+  r.scores.forEach(s => {
+    const n = DIRS[s.d].name;
+    if (s.ability >= 70 && s.interest < 50) out.push(`<b>${n}</b>: есептерді жақсы шештің, бірақ қызығушылығың әлі аз. Бір сынақ сабаққа барып көр — мүмкін, бұл сенің жасырын талантың.`);
+    else if (s.interest >= 75 && s.ability < 50) out.push(`<b>${n}</b>: қызығушылығың жоғары. Негіздерін үйренсең, тез өсесің.`);
+  });
+  return out.slice(0, 3);
+}
+
+/* ---------- Нәтиже ---------- */
+function finish(){
+  state.end = Date.now();
+  const r = compute();
+  saveResult(r);
+  renderResult(r);
+  show('result');
+}
+
+function dirCard(d, full){
+  const D = DIRS[d];
+  let h = `<div class="dircard" style="border-top-color:${D.color}">`;
+  h += `<div class="tag">${full ? 'Негізгі бағыт' : 'Қосымша бағыт'}</div><h2>${D.name}</h2>`;
+  if (full){
+    h += `<h3>Неге бұл бағыт саған сәйкес келеді</h3><p style="margin:0">${D.why}</p>`;
+    h += `<h3>Әрі қарай не үйрену керек</h3><ul>${D.learn.map(x => `<li>${x}</li>`).join('')}</ul>`;
+  }
+  h += `<h3>Қайда қатысуға болады</h3><ul>${D.where.map(x => `<li>${x}</li>`).join('')}</ul>`;
+  if (full){
+    h += `<h3>Бұл саған не береді</h3><p style="margin:0">${D.gain}</p>`;
+    if (D.note) h += `<div class="note">${D.note}</div>`;
+  }
+  return h + '</div>';
+}
+
+function renderResult(r){
+  const top = r.ranked[0], second = r.ranked[1];
+  const T = DIRS[top.d];
+  const ins = insights(r);
+  const weak = top.total < 40;
+  let h = '<div class="card">';
+  h += `<h1>${esc(state.name)}, сенің нәтижең</h1>`;
+  h += `<p class="sub">${esc(state.cls)}${state.school ? ' · ' + esc(state.school) : ''} · ${fmtDate(new Date(state.end))}</p>`;
+  if (weak){
+    h += `<div class="hero" style="border-left-color:#64748b;background:#f1f5f9"><div class="lbl" style="color:#334155">Нәтиже</div><div class="big">Әзірге айқын бейімділік байқалмады</div><div class="lvl">Бұл қалыпты жағдай. Жалпы курстан бастап, әр бағытты байқап көр. Ең жоғары нәтиже: ${T.name} (${top.total}%).</div></div>`;
+  } else {
+    h += `<div class="hero" style="border-left-color:${T.color}"><div class="lbl">Сенің негізгі бейімділігің</div><div class="big">${T.name}</div><div class="lvl">Бейімділік деңгейі: <b>${levelText(top.total)}</b> (${top.total}%) · қосымша бағыт: <b>${DIRS[second.d].name}</b> (${second.total}%)</div></div>`;
+  }
+  h += '<div class="badges">';
+  h += `<span class="badge">Дұрыс шешілген есептер: <b>${r.correct} / ${TASKS.length}</b></span>`;
+  h += `<span class="badge">Жұмсалған уақыт: <b>${r.minutes} мин</b></span>`;
+  if (r.correct >= 18) h += '<span class="badge star">Есептерді өте жақсы шештің — олимпиадалық резервке ұсынылады</span>';
+  h += '</div>';
+
+  h += '<h3>Барлық бағыттар бойынша профиль</h3>';
+  r.ranked.forEach(s => {
+    const D = DIRS[s.d];
+    h += `<div class="drow"><div class="dname"><span class="dot" style="background:${D.color}"></span>${D.name}</div><div class="track"><div class="fill" style="width:${s.total}%;background:${D.color}"></div></div><div class="pct">${s.total}%</div><div class="dsub">есептер ${s.ability}% · қызығушылық ${s.interest}%</div></div>`;
+  });
+  h += '<p class="small" style="margin-top:8px">Жалпы бейімділік = есептер нәтижесі (60%) + қызығушылық (40%).</p>';
+  if (ins.length) h += `<h3>Байқағандарымыз</h3><ul class="insights">${ins.map(x => `<li>${x}</li>`).join('')}</ul>`;
+  h += '</div>';
+
+  h += '<div class="card">';
+  h += dirCard(top.d, true);
+  h += dirCard(second.d, false);
+  h += `<div class="path"><h3>IT-мектептегі сенің орның</h3>
+    <p style="margin:0">7-сынып — «База» сатысы. Сен жоғары сыныптардың командасына <b>тағылымдамашы (стажёр)</b> ретінде қосыла аласың: олармен бірге жаттығасың, жарыстарға көмекші болып барасың. 8–9-сыныпта резервке, 10–11-сыныпта негізгі құрамға өтесің.</p></div>`;
+  h += '<p class="small" style="margin-top:14px">Жарыстардың мерзімдері жыл сайын өзгереді — оларды ұйымдастырушылардың ресми сайттарынан нақтылаңыз. Тест — бағдар ғана: соңғы шешім сынақ сабақтан кейін қабылданады.</p>';
+  h += `<div class="actions no-print">
+      <button class="btn" type="button" id="printBtn">Басып шығару</button>
+      <button class="btn ghost" type="button" id="copyBtn">Нәтижені көшіру</button>
+      <button class="btn ghost" type="button" id="againBtn">Жаңа оқушы</button>
+      <button class="linkbtn" type="button" id="openTeacher2">Мұғалім панелі</button>
+    </div>`;
+  h += '</div>';
+  $('#result').innerHTML = h;
+
+  $('#printBtn').addEventListener('click', () => window.print());
+  $('#copyBtn').addEventListener('click', () => copyText(summaryText(r), $('#copyBtn')));
+  $('#againBtn').addEventListener('click', () => { state = null; ['#fName','#fClass','#fSchool'].forEach(s => $(s).value = ''); show('start'); });
+  $('#openTeacher2').addEventListener('click', openTeacher);
+}
+
+function fmtDate(d){
+  const p = n => String(n).padStart(2, '0');
+  return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()}`;
+}
+
+function summaryText(r){
+  const lines = [
+    'IT-бағыттарға бейімділік тесті (7-сынып)',
+    `Оқушы: ${state.name}`,
+    `Сынып: ${state.cls}${state.school ? ', мектеп: ' + state.school : ''}`,
+    `Күні: ${fmtDate(new Date(state.end))}, уақыты: ${r.minutes} мин`,
+    `Дұрыс шешілген есептер: ${r.correct}/${TASKS.length}`,
+    `Негізгі бейімділік: ${DIRS[r.ranked[0].d].name} (${r.ranked[0].total}%)`,
+    `Қосымша бағыт: ${DIRS[r.ranked[1].d].name} (${r.ranked[1].total}%)`,
+    'Барлық бағыттар:'
+  ];
+  r.ranked.forEach(s => lines.push(`- ${DIRS[s.d].name}: ${s.total}% (есептер ${s.ability}%, қызығушылық ${s.interest}%)`));
+  return lines.join('\n');
+}
+
+function copyText(text, btn){
+  const done = () => { const o = btn.textContent; btn.textContent = 'Көшірілді!'; setTimeout(() => btn.textContent = o, 1800); };
+  if (navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) {}
+  ta.remove();
+}
+
+/* ---------- Сақтау және мұғалім панелі ---------- */
+function loadAll(){
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch (e) { return []; }
+}
+function saveResult(r){
+  const rec = {
+    name: state.name, cls: state.cls, school: state.school, date: fmtDate(new Date(state.end)),
+    minutes: r.minutes, correct: r.correct, top: r.ranked[0].d, second: r.ranked[1].d,
+    scores: Object.fromEntries(r.scores.map(s => [s.d, s.total]))
+  };
+  try { const all = loadAll(); all.push(rec); localStorage.setItem(STORE_KEY, JSON.stringify(all)); } catch (e) {}
+}
+
+let teacherReturn = 'start';
+function openTeacher(){
+  teacherReturn = $('#result').classList.contains('hidden') ? 'start' : 'result';
+  renderTeacher(); show('teacher');
+}
+function renderTeacher(){
+  const all = loadAll();
+  if (!all.length){ $('#teacherBody').innerHTML = '<p>Әзірге нәтиже жоқ.</p>'; return; }
+  let h = `<p class="small">Барлығы: ${all.length} оқушы</p><div class="tablewrap"><table><thead><tr><th>Аты-жөні</th><th>Сынып</th><th>Күні</th><th>Есептер</th><th>Негізгі бағыт</th><th>Қосымша бағыт</th>`;
+  ORDER.forEach(d => h += `<th title="${DIRS[d].name}"><span class="dot" style="background:${DIRS[d].color};display:inline-block"></span> ${DIRS[d].name.split(' ')[0]}</th>`);
+  h += '</tr></thead><tbody>';
+  all.forEach(x => {
+    h += `<tr><td>${esc(x.name)}</td><td>${esc(x.cls)}</td><td>${x.date}</td><td class="num">${x.correct}/${TASKS.length}</td><td>${DIRS[x.top].name}</td><td>${DIRS[x.second].name}</td>`;
+    ORDER.forEach(d => h += `<td class="num">${x.scores[d]}%</td>`);
+    h += '</tr>';
+  });
+  h += '</tbody></table></div>';
+  $('#teacherBody').innerHTML = h;
+}
+function csvCell(v){ const s = String(v); return /[;"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+$('#csvBtn').addEventListener('click', () => {
+  const all = loadAll();
+  if (!all.length) return;
+  const head = ['Аты-жөні','Сынып','Мектеп','Күні','Уақыт (мин)','Дұрыс есептер','Негізгі бағыт','Қосымша бағыт', ...ORDER.map(d => DIRS[d].name + ' (%)')];
+  const rows = all.map(x => [x.name, x.cls, x.school, x.date, x.minutes, `${x.correct}/${TASKS.length}`, DIRS[x.top].name, DIRS[x.second].name, ...ORDER.map(d => x.scores[d])]);
+  const csv = '﻿' + [head, ...rows].map(r => r.map(csvCell).join(';')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8'}));
+  const d = new Date();
+  a.download = `it-test-natizheleri-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+});
+let clearArmed = false;
+$('#clearBtn').addEventListener('click', () => {
+  if (!clearArmed){ clearArmed = true; $('#clearBtn').textContent = 'Растау: барлығын өшіру'; setTimeout(() => { clearArmed = false; $('#clearBtn').textContent = 'Барлығын өшіру'; }, 4000); return; }
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  clearArmed = false; $('#clearBtn').textContent = 'Барлығын өшіру'; renderTeacher();
+});
+$('#backFromTeacher').addEventListener('click', () => show(teacherReturn));
+$('#openTeacher1').addEventListener('click', openTeacher);
+</script>
+</body>
+</html>
